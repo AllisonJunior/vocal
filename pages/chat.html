@@ -12,16 +12,36 @@
        <script>
         document.addEventListener("DOMContentLoaded", () => {
           const user = sessionStorage.getItem("user");
-          console.log("Usuário encontrado:", user); // 👈 Diagnóstico
-      
           if (!user) {
             alert("Você precisa realizar o login para acessar.");
             window.location.href = "/";
           } else {
             alert(`Bem-vindo(a), ${user}!`);
+            carregarMensagens();
           }
         });
-      </script>
+        
+        async function carregarMensagens() {
+          try {
+            const res = await fetch("/.netlify/functions/getMessages"); // função serverless que vamos criar
+            const mensagens = await res.json();
+        
+            const chatHistory = document.querySelector('.chat-history');
+            chatHistory.innerHTML = ""; // limpa o chat
+        
+            mensagens.forEach(({ user, message }) => {
+              const div = document.createElement('div');
+              div.classList.add('chat-message');
+              div.textContent = `[${user}]: ${message}`;
+              chatHistory.appendChild(div);
+            });
+        
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+          } catch (err) {
+            console.error("Erro ao carregar mensagens:", err);
+          }
+        }
+        </script>
 </head>
 
 <body>
@@ -51,32 +71,42 @@
               const btnSendGeral = document.getElementById('sendGeral');
               const chatHistory = document.querySelector('.chat-history');
             
-              btnSendGeral.addEventListener('click', () => {
-                let texto = input.value.trim();
+              btnSendGeral.addEventListener('click', async () => {
+              let texto = input.value.trim();
+              const user = sessionStorage.getItem("user") || "Anônimo";
             
-                if (texto !== '') {
-                  // Verifica expressões entre colchetes e avalia cada uma
-                  const expressaoRegex = /\[([^\[\]]+)\]/g;
-                  texto = texto.replace(expressaoRegex, (match, expr) => {
-                    try {
-                      // Usa eval com cuidado (apenas para expressões simples)
-                      const resultado = eval(expr);
-                      return resultado;
-                    } catch (e) {
-                      return '[erro]';
-                    }
+              if (texto !== '') {
+                const expressaoRegex = /\[([^\[\]]+)\]/g;
+                texto = texto.replace(expressaoRegex, (match, expr) => {
+                  try {
+                    return eval(expr);
+                  } catch {
+                    return '[erro]';
+                  }
+                });
+            
+                const novaMensagem = { user, message: texto };
+            
+                try {
+                  const res = await fetch("/.netlify/functions/sendMessage", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(novaMensagem)
                   });
             
-                  // Cria a nova mensagem
-                  const novaMensagem = document.createElement('div');
-                  novaMensagem.classList.add('chat-message');
-                  novaMensagem.textContent = `[Você]: ${texto}`;
+                  const result = await res.json();
             
-                  chatHistory.appendChild(novaMensagem);
-                  chatHistory.scrollTop = chatHistory.scrollHeight;
-                  input.value = '';
+                  if (res.ok && result.success) {
+                    input.value = "";
+                    carregarMensagens(); // atualiza o chat
+                  } else {
+                    console.error("Erro ao enviar:", result.error);
+                  }
+                } catch (err) {
+                  console.error("Erro:", err);
                 }
-              });
+              }
+            });
             </script>
             
             
