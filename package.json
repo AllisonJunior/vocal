@@ -1,1 +1,12 @@
-
+{
+    "name": "vocaloid-login",
+    "version": "1.0.0",
+    "description": "Projeto Vocaloid com login via Netlify Function",
+    "scripts": {
+      "start": "netlify dev",
+      "build": "echo 'Nada para compilar'"
+    },
+    "type": "module",
+    "dependencies": {}
+  }
+  
