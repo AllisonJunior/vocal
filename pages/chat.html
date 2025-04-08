@@ -9,42 +9,50 @@
        <title>Chat</title>
        <link rel = "stylesheet" href = "../css/chat.css">
 
+       <!-- Markdown parser -->
+       <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+       <!-- Sanitização para evitar XSS -->
+       <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
+
        <script>
         document.addEventListener("DOMContentLoaded", () => {
           const user = sessionStorage.getItem("user");
-        
+    
           if (!user) {
             alert("Você precisa realizar o login para acessar.");
             window.location.href = "/";
           } else {
             alert(`Bem-vindo(a), ${user}!`);
-            
-            carregarMensagens(); // primeira chamada imediata
-            setInterval(carregarMensagens, 3000); // chamadas a cada 3s
+            carregarMensagens(); // primeira chamada
+            setInterval(carregarMensagens, 3000); // a cada 3 segundos
           }
         });
-        
+    
         async function carregarMensagens() {
           try {
             const res = await fetch("/.netlify/functions/getMessages");
             const mensagens = await res.json();
-        
+    
             const chatHistory = document.querySelector('.chat-history');
-            chatHistory.innerHTML = ""; // limpa o chat antes de recriar tudo
-        
+            chatHistory.innerHTML = ""; // limpa o chat
+    
             mensagens.forEach(({ user, message }) => {
               const div = document.createElement('div');
               div.classList.add('chat-message');
-              div.textContent = `[${user}]: ${message}`;
+    
+              const mensagemMarkdown = marked.parse(message); // parse do markdown
+              const mensagemSegura = DOMPurify.sanitize(mensagemMarkdown); // limpeza
+    
+              div.innerHTML = `<strong>${user}:</strong> ${mensagemSegura}`;
               chatHistory.appendChild(div);
             });
-        
+    
             chatHistory.scrollTop = chatHistory.scrollHeight;
           } catch (err) {
             console.error("Erro ao carregar mensagens:", err);
           }
         }
-        </script>
+      </script>
 </head>
 
 <body>
@@ -70,49 +78,46 @@
        </div>
 
        <script>
-              const input = document.getElementById('chatInput');
-              const btnSendGeral = document.getElementById('sendGeral');
-              const chatHistory = document.querySelector('.chat-history');
-            
-              btnSendGeral.addEventListener('click', async () => {
-              let texto = input.value.trim();
-              const user = sessionStorage.getItem("user") || "Anônimo";
-            
-              if (texto !== '') {
-                const expressaoRegex = /\[([^\[\]]+)\]/g;
-                texto = texto.replace(expressaoRegex, (match, expr) => {
-                  try {
-                    return eval(expr);
-                  } catch {
-                    return '[erro]';
-                  }
-                });
-            
-                const novaMensagem = { user, message: texto };
-            
-                try {
-                  const res = await fetch("/.netlify/functions/sendMessage", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(novaMensagem)
-                  });
-            
-                  const result = await res.json();
-            
-                  if (res.ok && result.success) {
-                    input.value = "";
-                    carregarMensagens(); // atualiza o chat
-                  } else {
-                    console.error("Erro ao enviar:", result.error);
-                  }
-                } catch (err) {
-                  console.error("Erro:", err);
-                }
+        const input = document.getElementById('chatInput');
+        const btnSendGeral = document.getElementById('sendGeral');
+    
+        btnSendGeral.addEventListener('click', async () => {
+          let texto = input.value.trim();
+          const user = sessionStorage.getItem("user") || "Anônimo";
+    
+          if (texto !== '') {
+            const expressaoRegex = /\[([^\[\]]+)\]/g;
+            texto = texto.replace(expressaoRegex, (match, expr) => {
+              try {
+                return eval(expr);
+              } catch {
+                return '[erro]';
               }
             });
-            </script>
-            
-            
+    
+            const novaMensagem = { user, message: texto };
+    
+            try {
+              const res = await fetch("/.netlify/functions/sendMessage", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(novaMensagem)
+              });
+    
+              const result = await res.json();
+    
+              if (res.ok && result.success) {
+                input.value = "";
+                carregarMensagens(); // atualiza o chat
+              } else {
+                console.error("Erro ao enviar:", result.error);
+              }
+            } catch (err) {
+              console.error("Erro:", err);
+            }
+          }
+        });
+      </script>
 
      </body>
      
