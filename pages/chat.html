@@ -5,27 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>chat</title>
 
-    <script defer>
-        window.addEventListener("DOMContentLoaded", () => {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
           const user = sessionStorage.getItem("user");
       
           if (!user) {
-            alert("Você precisa fazer login para acessar esta página.");
+            alert("Você precisa realizar o login para acessar.");
             window.location.href = "/";
           } else {
             alert(`Bem-vindo(a), ${user}!`);
           }
-      
-          // Botão de logout
-          const logoutBtn = document.querySelector("#logoutBtn");
-          if (logoutBtn) {
-            logoutBtn.addEventListener("click", () => {
-              sessionStorage.removeItem("user");
-              window.location.href = "/";
-            });
-          }
         });
-      </script>   
+      </script>
+        
 </head>
 <body>
     
