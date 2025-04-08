@@ -12,22 +12,25 @@
        <script>
         document.addEventListener("DOMContentLoaded", () => {
           const user = sessionStorage.getItem("user");
+        
           if (!user) {
             alert("Você precisa realizar o login para acessar.");
             window.location.href = "/";
           } else {
             alert(`Bem-vindo(a), ${user}!`);
-            carregarMensagens();
+            
+            carregarMensagens(); // primeira chamada imediata
+            setInterval(carregarMensagens, 3000); // chamadas a cada 3s
           }
         });
         
         async function carregarMensagens() {
           try {
-            const res = await fetch("/.netlify/functions/getMessages"); // função serverless que vamos criar
+            const res = await fetch("/.netlify/functions/getMessages");
             const mensagens = await res.json();
         
             const chatHistory = document.querySelector('.chat-history');
-            chatHistory.innerHTML = ""; // limpa o chat
+            chatHistory.innerHTML = ""; // limpa o chat antes de recriar tudo
         
             mensagens.forEach(({ user, message }) => {
               const div = document.createElement('div');
