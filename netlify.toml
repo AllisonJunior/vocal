@@ -1,2 +1,7 @@
 [build]
   functions = "functions"
+
+[[redirects]]
+  from = "/chat"
+  to = "/pages/chat.html"
+  status = 200
