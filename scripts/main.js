@@ -13,8 +13,8 @@ document.querySelector(".main_login_form").addEventListener("submit", async (e) 
   const data = await res.json();
 
   if (res.ok && data.success) {
-    localStorage.setItem("user", user); // salva o usuário localmente
-    window.location.href = "/pages/chat.html"; // redireciona para o chat
+    sessionStorage.setItem("user", user); // salva na sessão
+    window.location.href = "/pages/chat.html";
   } else {
     alert("Usuário ou senha incorretos.");
   }

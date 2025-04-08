@@ -7,16 +7,25 @@
 
     <script defer>
         window.addEventListener("DOMContentLoaded", () => {
-          const user = localStorage.getItem("user");
+          const user = sessionStorage.getItem("user");
       
           if (!user) {
             alert("Você precisa fazer login para acessar esta página.");
-            window.location.href = "/"; // redireciona para a tela de login
+            window.location.href = "/";
           } else {
             alert(`Bem-vindo(a), ${user}!`);
           }
+      
+          // Botão de logout
+          const logoutBtn = document.querySelector("#logoutBtn");
+          if (logoutBtn) {
+            logoutBtn.addEventListener("click", () => {
+              sessionStorage.removeItem("user");
+              window.location.href = "/";
+            });
+          }
         });
-     </script>      
+      </script>   
 </head>
 <body>
     
