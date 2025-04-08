@@ -13,9 +13,9 @@ document.querySelector(".main_login_form").addEventListener("submit", async (e) 
   const data = await res.json();
 
   if (res.ok && data.success) {
-    sessionStorage.setItem("user", user); // salva na sessão
-    window.location.href = "/pages/chat.html";
+    alert("Login realizado com sucesso!");
+    window.location.href = "/chat"; // ✅ ROTA LIMPA
   } else {
     alert("Usuário ou senha incorretos.");
-  }
+  }  
 });
