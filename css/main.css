@@ -1,0 +1,99 @@
+/* H1 AND IMG FROM LOGO */
+.main_titleANDlogo
+{
+ display: flex; 
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 1em;
+ text-align: center;
+}
+
+.main_title
+{
+ /* font: Kaushan Script*/
+ color: red;
+ font-size: 2em;
+ font-family: 'Caveat', cursive;
+ font-style: italic;
+ margin-bottom: 0.5rem;  
+}
+
+.main_logo
+{ 
+  margin-top: -5px;
+  width: 300px;
+  height: 400px;
+}
+
+
+
+
+
+/* LOGIN SECTION */
+.main_login
+{
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ margin-top: 1em;
+}
+
+.main_login_inputs
+{
+ display: flex;
+ flex-direction: row; 
+ align-items: center;
+ justify-content: center;
+}
+
+.main_text
+{
+ font-family: 'Comic Sans MS', cursive;   
+ font-weight: lighter;
+ margin-top: 0.5em;
+ margin-bottom: 0.5em;
+ margin-right: 0px;
+ width: 40px;
+ padding-right: -2.5em;
+}
+
+.main_inputText , .main_inputPass
+{  
+ margin-left: 1em;
+ width: 130px;  
+ padding: 0.5em; 
+ font-size: 1em;
+
+ border: 1px solid #ccc;
+ border-radius: 8px;
+ box-shadow: inset 0 1px 3px rgba ( 0 , 0 , 0 , 0.1 );
+ outline: none;
+}
+
+.main_inputText:focus , .main_inputPass:focus
+{
+ border-color: #df2e2e;   
+ box-shadow: 0 0 5px rgba ( 74 , 144 , 226 , 0.5 );
+ background-color: #fdfdfd;
+}
+
+.main_confirmBtn
+{
+ font-family: 'Comic Sans MS', cursive;
+ font-weight: lighter;
+
+ margin-top: 1em;
+ width: 210px;
+ height: 35px;
+
+ border: 2px solid #ccc;
+ border-radius: 10px;
+}
+
+.main_confirmBtn:hover
+{
+ border-color: #cfc4c4;
+ background-color: #cfc4c4;
+}
