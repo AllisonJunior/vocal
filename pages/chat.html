@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chat</title>
+<html lang="pt-br">
 
-    <script>
+
+
+
+
+<head>
+       <title>Chat</title>
+       <link rel = "stylesheet" href = "../css/chat.css">
+
+       <script>
         document.addEventListener("DOMContentLoaded", () => {
           const user = sessionStorage.getItem("user");
           console.log("Usuário encontrado:", user); // 👈 Diagnóstico
@@ -18,10 +22,72 @@
           }
         });
       </script>
-      
-        
 </head>
+
 <body>
-    
-</body>
+       <div class="main-container">
+         <!-- Lado esquerdo: Histórico do chat -->
+         <div class="chat-history">
+           <div class="chat-message">[Jogador]: Olá!</div>
+           <div class="chat-message">[DM]: Bem-vindo à sessão.</div>
+           <!-- Aqui você pode adicionar mais mensagens dinamicamente -->
+         </div>
+     
+         <!-- Lado direito: Sidebar existente -->
+         <div class="sidebar">
+           <div class="hotbar">
+             <button id="btn1">Ficha</button>
+           </div>
+     
+           <div class="chat-container">
+              <textarea id="chatInput" placeholder="Digite sua mensagem..." class="chat-input"></textarea>
+              <button id="sendGeral" class="chat-send">Enviar (Geral)</button>
+              <button id="sendDM" class="chat-send">Enviar (DM)</button>              
+           </div>
+         </div>
+       </div>
+
+       <script>
+              const input = document.getElementById('chatInput');
+              const btnSendGeral = document.getElementById('sendGeral');
+              const chatHistory = document.querySelector('.chat-history');
+            
+              btnSendGeral.addEventListener('click', () => {
+                let texto = input.value.trim();
+            
+                if (texto !== '') {
+                  // Verifica expressões entre colchetes e avalia cada uma
+                  const expressaoRegex = /\[([^\[\]]+)\]/g;
+                  texto = texto.replace(expressaoRegex, (match, expr) => {
+                    try {
+                      // Usa eval com cuidado (apenas para expressões simples)
+                      const resultado = eval(expr);
+                      return resultado;
+                    } catch (e) {
+                      return '[erro]';
+                    }
+                  });
+            
+                  // Cria a nova mensagem
+                  const novaMensagem = document.createElement('div');
+                  novaMensagem.classList.add('chat-message');
+                  novaMensagem.textContent = `[Você]: ${texto}`;
+            
+                  chatHistory.appendChild(novaMensagem);
+                  chatHistory.scrollTop = chatHistory.scrollHeight;
+                  input.value = '';
+                }
+              });
+            </script>
+            
+            
+
+     </body>
+     
+     
+
+
+
+
+
 </html>
